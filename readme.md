@@ -39,7 +39,143 @@ db = client["mydatabase"]  # Select or create database
 collection = db["users"]  # Select or create collection
 ```
 
-## **4. Create (Insert Data)**
+---
+
+## **4. MongoDB Core Fundamentals (Short Revision)**
+
+### **1. Basics**
+#### Syntax:
+```sh
+show dbs  # List all databases
+use mydatabase  # Switch to a database
+show collections  # List collections
+```
+#### Example:
+```sh
+use library  # Switch to library database
+```
+
+### **2. CRUD Operations**
+#### Syntax & Example:
+```sh
+# Create
+collection.insert_one({"name": "John", "age": 30})
+
+# Read
+collection.find_one({"name": "John"})
+
+# Update
+collection.update_one({"name": "John"}, {"$set": {"age": 31}})
+
+# Delete
+collection.delete_one({"name": "John"})
+```
+
+### **3. Data Types**
+#### Supported Data Types:
+- String, Number (int, double), Boolean, Array, Object, Date
+
+#### Example:
+```sh
+{ "name": "Alice", "age": 25, "isMember": true, "skills": ["Python", "MongoDB"] }
+```
+
+### **4. Operators**
+#### Example:
+```sh
+collection.find({ "age": { "$gt": 25 } })  # Greater than 25
+```
+
+### **5. Cursor Methods**
+#### Example:
+```sh
+cursor = collection.find()
+for doc in cursor:
+    print(doc)
+```
+
+### **6. Aggregate Framework**
+#### Example:
+```sh
+collection.aggregate([{ "$group": { "_id": "$city", "total": { "$sum": 1 } } }])
+```
+
+### **7. Aggregate with String Operator**
+```sh
+collection.aggregate([{ "$project": { "fullName": { "$concat": ["$firstName", " ", "$lastName"] } } }])
+```
+
+### **8. Aggregate with Arithmetic Operator**
+```sh
+collection.aggregate([{ "$project": { "doubleAge": { "$multiply": ["$age", 2] } } }])
+```
+
+### **9. Conditions (if-else)**
+```sh
+collection.aggregate([{ "$project": { "ageGroup": { "$cond": { "if": { "$gte": ["$age", 18] }, "then": "Adult", "else": "Minor" } } } }])
+```
+
+### **10. Variables**
+```sh
+let ageLimit = 30;
+collection.find({ "age": { "$gte": ageLimit } })
+```
+
+### **11. Data Modeling**
+```sh
+{
+    "_id": ObjectId("..."),
+    "name": "John",
+    "address": {
+        "street": "123 Main St",
+        "city": "New York"
+    }
+}
+```
+
+### **12. Schema Validation**
+```sh
+db.createCollection("users", {
+   validator: {
+      $jsonSchema: {
+         bsonType: "object",
+         required: ["name", "age"],
+         properties: {
+            name: {
+               bsonType: "string",
+               description: "must be a string"
+            },
+            age: {
+               bsonType: "int",
+               minimum: 18,
+               description: "must be an integer >= 18"
+            }
+         }
+      }
+   }
+})
+```
+
+### **13. Transactions**
+```sh
+session = client.start_session()
+session.start_transaction()
+try:
+    collection.insert_one({"name": "Alice"}, session=session)
+    collection.insert_one({"name": "Bob"}, session=session)
+    session.commit_transaction()
+except:
+    session.abort_transaction()
+```
+
+### **14. Replica**
+```sh
+rs.initiate()
+rs.status()
+```
+
+
+## **5. Create (Insert Data)**
 ```python
 # Insert one document
 user = {"name": "Alice", "age": 25, "city": "New York"}
@@ -53,7 +189,7 @@ users = [
 collection.insert_many(users)
 ```
 
-## **5. Read (Retrieve Data)**
+## **6. Read (Retrieve Data)**
 ```python
 # Fetch one document
 user = collection.find_one({"name": "Alice"})
@@ -68,7 +204,7 @@ for user in collection.find({"age": {"$gt": 25}}):  # Age greater than 25
     print(user)
 ```
 
-## **6. Update (Modify Data)**
+## **7. Update (Modify Data)**
 ```python
 # Update one document
 collection.update_one({"name": "Alice"}, {"$set": {"age": 26}})
@@ -77,7 +213,7 @@ collection.update_one({"name": "Alice"}, {"$set": {"age": 26}})
 collection.update_many({"city": "Los Angeles"}, {"$set": {"city": "San Francisco"}})
 ```
 
-## **7. Delete (Remove Data)**
+## **8. Delete (Remove Data)**
 ```python
 # Delete one document
 collection.delete_one({"name": "Alice"})
