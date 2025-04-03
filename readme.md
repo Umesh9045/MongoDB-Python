@@ -3,16 +3,16 @@
 ## 📂 Project Structure
 ```
 project_root/
-│-- app/
-│   │-- routes/
-│   │   │-- users.py
-│   │   │-- payments.py
-│   │-- services/
-│   │   │-- users.py
-│   │   │-- payments.py
-│   │-- models.py
-│   │-- db.py
-│-- main.py
+│
+│--routes/     
+│   │-- users.py        # Routes all user related apis
+│   │-- payments.py     # Routes all payment related apis
+│--services/
+│   │-- users.py        # All users related functions that trigger by apis
+│   │-- payments.py     # All payments related functions that trigger by apis
+│-- models.py           # Validation for data input for apis
+│-- db.py               # Database and collection configuration
+│-- main.py             # Start file (origin)
 │-- requirements.txt
 │-- readme.md
 ```
@@ -49,10 +49,10 @@ Edit the `db.py` file and replace the `uri` with your MongoDB connection string.
 from motor.motor_asyncio import AsyncIOMotorClient
 
 uri = "your_mongodb_uri_here"
-client = AsyncIOMotorClient(uri)
+client = MongoClient(uri, server_api=ServerApi('1'))
 db = client["your_database_name"]
-users_collection = db["users"]
-payments_collection = db["payments"]
+users_collection = db["users_collection_name"]
+payments_collection = db["payments_collection_name"]
 ```
 
 ### **4️⃣ Run the FastAPI Server**
