@@ -30,98 +30,115 @@ pip install pymongo
 
 ---
 
-## **3. Connect to MongoDB**
-```python
-from pymongo import MongoClient
-
-client = MongoClient("mongodb://localhost:27017/")  # Connect to MongoDB
-db = client["mydatabase"]  # Select or create database
-collection = db["users"]  # Select or create collection
-```
-
----
-
-## **4. MongoDB Core Fundamentals (Short Revision)**
+## **3. MongoDB Core Fundamentals (Short Revision with Real-World Use Cases)**
 
 ### **1. Basics**
-#### Syntax:
+#### **Real-World Use Case**: Setting up a MongoDB database for an e-commerce platform.
+#### **Syntax:**
 ```sh
 show dbs  # List all databases
-use mydatabase  # Switch to a database
+use ecommerce  # Switch to a database
 show collections  # List collections
 ```
-#### Example:
+#### **Example:**
 ```sh
-use library  # Switch to library database
+use ecommerce  # Switch to ecommerce database
 ```
 
 ### **2. CRUD Operations**
-#### Syntax & Example:
+#### **Real-World Use Case**: Managing user accounts in a web application.
+#### **Syntax & Example:**
 ```sh
 # Create
-collection.insert_one({"name": "John", "age": 30})
+collection.insert_one({"name": "John", "age": 30, "email": "john@example.com"})
 
 # Read
-collection.find_one({"name": "John"})
+collection.find_one({"email": "john@example.com"})
 
 # Update
-collection.update_one({"name": "John"}, {"$set": {"age": 31}})
+collection.update_one({"email": "john@example.com"}, {"$set": {"age": 31}})
 
 # Delete
-collection.delete_one({"name": "John"})
+collection.delete_one({"email": "john@example.com"})
 ```
 
 ### **3. Data Types**
-#### Supported Data Types:
-- String, Number (int, double), Boolean, Array, Object, Date
-
-#### Example:
-```sh
-{ "name": "Alice", "age": 25, "isMember": true, "skills": ["Python", "MongoDB"] }
-```
+#### **Real-World Use Case**: Defining user attributes in a social media application.
+#### **Types and Examples:**
+| Data Type  | Description | Example |
+|-----------|------------|---------|
+| String    | Text data  | "Alice" |
+| Number    | Integer, Double | 25, 3.14 |
+| Boolean   | True/False | true |
+| Array     | List of values | ["Python", "MongoDB"] |
+| Object    | Embedded document | {"city": "NY", "zip": "10001"} |
+| Date      | Timestamp | ISODate("2023-01-01T00:00:00Z") |
 
 ### **4. Operators**
-#### Example:
-```sh
-collection.find({ "age": { "$gt": 25 } })  # Greater than 25
-```
+#### **Real-World Use Case**: Filtering customers based on age.
+#### **Operators Table:**
+| Operator | Description | Example |
+|----------|------------|---------|
+| $gt      | Greater than | { "age": { "$gt": 25 } } |
+| $lt      | Less than | { "age": { "$lt": 30 } } |
+| $eq      | Equal to | { "status": { "$eq": "active" } } |
+| $ne      | Not equal | { "status": { "$ne": "inactive" } } |
+| $in      | Matches values in array | { "category": { "$in": ["A", "B"] } } |
 
 ### **5. Cursor Methods**
-#### Example:
-```sh
-cursor = collection.find()
-for doc in cursor:
-    print(doc)
-```
+#### **Real-World Use Case**: Paginating products in an online store.
+#### **Cursor Methods Table:**
+| Method | Description |
+|--------|------------|
+| find() | Retrieve all documents |
+| limit(n) | Limit the number of documents |
+| sort() | Sort documents |
+| count() | Count the number of documents |
+| skip(n) | Skip first `n` documents |
 
 ### **6. Aggregate Framework**
-#### Example:
-```sh
-collection.aggregate([{ "$group": { "_id": "$city", "total": { "$sum": 1 } } }])
-```
+#### **Real-World Use Case**: Calculating total sales per city.
+#### **Aggregation Stages Table:**
+| Stage | Description |
+|-------|------------|
+| $match | Filters documents |
+| $group | Groups documents |
+| $sort  | Sorts documents |
+| $project | Reshapes documents |
+| $limit  | Limits results |
 
 ### **7. Aggregate with String Operator**
+#### **Real-World Use Case**: Creating full names in a user database.
+#### **Syntax & Example:**
 ```sh
 collection.aggregate([{ "$project": { "fullName": { "$concat": ["$firstName", " ", "$lastName"] } } }])
 ```
 
 ### **8. Aggregate with Arithmetic Operator**
+#### **Real-World Use Case**: Calculating double salary for bonus calculations.
+#### **Syntax & Example:**
 ```sh
-collection.aggregate([{ "$project": { "doubleAge": { "$multiply": ["$age", 2] } } }])
+collection.aggregate([{ "$project": { "doubleSalary": { "$multiply": ["$salary", 2] } } }])
 ```
 
 ### **9. Conditions (if-else)**
+#### **Real-World Use Case**: Categorizing users based on age.
+#### **Syntax & Example:**
 ```sh
 collection.aggregate([{ "$project": { "ageGroup": { "$cond": { "if": { "$gte": ["$age", 18] }, "then": "Adult", "else": "Minor" } } } }])
 ```
 
 ### **10. Variables**
+#### **Real-World Use Case**: Querying users above a dynamic age limit.
+#### **Syntax & Example:**
 ```sh
 let ageLimit = 30;
 collection.find({ "age": { "$gte": ageLimit } })
 ```
 
 ### **11. Data Modeling**
+#### **Real-World Use Case**: Structuring user profile data in a job portal.
+#### **Syntax & Example:**
 ```sh
 {
     "_id": ObjectId("..."),
@@ -134,90 +151,10 @@ collection.find({ "age": { "$gte": ageLimit } })
 ```
 
 ### **12. Schema Validation**
-```sh
-db.createCollection("users", {
-   validator: {
-      $jsonSchema: {
-         bsonType: "object",
-         required: ["name", "age"],
-         properties: {
-            name: {
-               bsonType: "string",
-               description: "must be a string"
-            },
-            age: {
-               bsonType: "int",
-               minimum: 18,
-               description: "must be an integer >= 18"
-            }
-         }
-      }
-   }
-})
-```
+#### **Real-World Use Case**: Ensuring data consistency for an employee database.
 
 ### **13. Transactions**
-```sh
-session = client.start_session()
-session.start_transaction()
-try:
-    collection.insert_one({"name": "Alice"}, session=session)
-    collection.insert_one({"name": "Bob"}, session=session)
-    session.commit_transaction()
-except:
-    session.abort_transaction()
-```
+#### **Real-World Use Case**: Ensuring atomicity when transferring money between accounts.
 
 ### **14. Replica**
-```sh
-rs.initiate()
-rs.status()
-```
-
-
-## **5. Create (Insert Data)**
-```python
-# Insert one document
-user = {"name": "Alice", "age": 25, "city": "New York"}
-collection.insert_one(user)
-
-# Insert multiple documents
-users = [
-    {"name": "Bob", "age": 30, "city": "Los Angeles"},
-    {"name": "Charlie", "age": 22, "city": "Chicago"},
-]
-collection.insert_many(users)
-```
-
-## **6. Read (Retrieve Data)**
-```python
-# Fetch one document
-user = collection.find_one({"name": "Alice"})
-print(user)
-
-# Fetch all documents
-for user in collection.find():
-    print(user)
-
-# Fetch with a condition
-for user in collection.find({"age": {"$gt": 25}}):  # Age greater than 25
-    print(user)
-```
-
-## **7. Update (Modify Data)**
-```python
-# Update one document
-collection.update_one({"name": "Alice"}, {"$set": {"age": 26}})
-
-# Update multiple documents
-collection.update_many({"city": "Los Angeles"}, {"$set": {"city": "San Francisco"}})
-```
-
-## **8. Delete (Remove Data)**
-```python
-# Delete one document
-collection.delete_one({"name": "Alice"})
-
-# Delete multiple documents
-collection.delete_many({"age": {"$lt": 25}})  # Remove users younger than 25
-```
+#### **Real-World Use Case**: Setting up high availability for a distributed system.
