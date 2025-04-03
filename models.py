@@ -11,6 +11,6 @@ class Payment(BaseModel):
     user_id: str
     amount: float
     currency: str
-    status: str = "completed"  # default status
+    payment_status: str = "completed"  # default status
     created_at: Optional[datetime] = datetime.utcnow()
     
