@@ -24,28 +24,3 @@ def get_all_payments():
     for payment in payments:
         payment["_id"] = str(payment["_id"])
     return payments
-
-async def refund_payment(payment_id: str):
-    # pdb.set_trace()
-    payment = payments_collection.find_one({"_id": ObjectId(payment_id)})
-    
-    if not payment:
-        raise HTTPException(status_code=404, detail="Payment not found")
-    
-    if payment.get("payment_status") == "Refunded":
-        raise HTTPException(status_code=400, detail="Payment is already refunded")
-    
-    payments_collection.update_one(
-        {"_id": ObjectId(payment_id)},
-        {"$set": {"payment_status": "Refunded"}}
-    )
-    
-    return {"message": "Payment refunded successfully"}
-
-async def track_refund_status(payment_id: str):
-    payment = payments_collection.find_one({"_id": ObjectId(payment_id)}, {"_id": 0})
-    
-    if not payment:
-        raise HTTPException(status_code=404, detail="Payment not found")
-    
-    return {"payment_id": payment_id, "status": payment["payment_status"]}

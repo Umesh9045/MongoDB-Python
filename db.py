@@ -16,6 +16,7 @@ try:
     db = client.payment_gateway_test     # db = Database Name
     users_collection = db["users"]       # Collection Name
     payments_collection = db["payments"] # Collection Name
+    refunds_collection = db["refunds"]
 
 except Exception as e:
     print(e)
