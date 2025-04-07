@@ -1,4 +1,4 @@
-### \U0001F4D8 `serverless-installation.md`  
+### 📘 `serverless-installation.md`  
 **How to Install Serverless Framework Locally (With SSL Error Fixes)**
 
 ---
@@ -34,11 +34,13 @@ npm config set registry https://registry.npmjs.org/
 
 ---
 
-#### ✅ 5. **Install Serverless Locally With Offline Plugin**
+#### ✅ 5. **Install Serverless v3 Locally With Offline Plugin**
 ```powershell
-npm install serverless serverless-offline --save-dev --ignore-scripts
+npm install serverless@3 serverless-offline@8.11.0 --save-dev --ignore-scripts --legacy-peer-deps
 ```
 > ⚠️ The `--ignore-scripts` flag skips the post-install fetch that causes SSL certificate errors.
+> 
+> ⚠️ `serverless-offline@8.11.0` is the last version compatible with Serverless v3.
 
 ---
 
@@ -56,9 +58,9 @@ npx serverless --version
 
 You should see something like:
 ```
-Serverless ⚡ Framework 4.11.1
+Serverless ⚡ Framework 3.x.x
 ```
 
 ---
 
-> ✅ You're now ready to use Serverless Framework locally for development.
+> ✅ You're now ready to use Serverless Framework v3 locally for development.
